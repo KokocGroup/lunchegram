@@ -45,7 +45,7 @@ class KitHrClient(object):
             token = self.token
         headers = {'APIKEY': token}
         url = self._build_url(api_method)
-        response = requests.request(request_method, url, params=params, json=json, headers=headers, timeout=10, verify=False)
+        response = requests.request(request_method, url, params=params, json=json, headers=headers, timeout=10)
         if response.status_code != 200:
             message = response.content.decode()
             code = response.status_code
