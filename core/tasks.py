@@ -10,10 +10,12 @@ from accounts.models import User
 from core.models import Company, Employee, LunchGroup, Lunch, LunchGroupMember
 from core.pair_matcher import MaximumWeightGraphMatcher
 from lunchegram import celery_app, bot
+from core.utils import delete_fired
 
 
 @celery_app.task
 def run_everything():
+    delete_fired()
     create_lunch_groups.delay()
 
 

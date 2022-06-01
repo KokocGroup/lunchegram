@@ -32,6 +32,7 @@ env = environ.Env(
     WEBHOOK_BASE_URL=str,
     WEBHOOK_URL_SECRET=str,
     SENTRY_DSN=(str, ''),
+    KIT_API_KEY=(str, ''),
 )
 
 env.read_env()
@@ -174,7 +175,7 @@ STATICFILES_DIRS = [
 # Social Auth
 
 SOCIAL_AUTH_TELEGRAM_BOT_TOKEN = env('TELEGRAM_BOT_TOKEN')
-
+KIT_API_KEY = env('KIT_API_KEY')
 TELEGRAM_WIDGET_DOMAIN = env('TELEGRAM_WIDGET_DOMAIN')
 
 SOCIAL_AUTH_PIPELINE = (
