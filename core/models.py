@@ -68,8 +68,11 @@ class Employee(TimeStampedModel):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, limit_choices_to={'has_telegram': True})
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, limit_choices_to={'has_telegram': True}, related_name='employees')
     state = models.CharField(max_length=10, choices=State.choices, default=State.online)
+    external_first_name = models.CharField(_('Имя из внешнего сервиса'), max_length=30, blank=True)
+    external_last_name = models.CharField(_('Фамилия из внешнего сервиса'), max_length=30, blank=True)
+    external_id = models.PositiveIntegerField(_('Внешний ID'), blank=True, null=True)
 
     class Meta:
         verbose_name = _('employee')
@@ -77,6 +80,19 @@ class Employee(TimeStampedModel):
         unique_together = [
             ['company', 'user'],
         ]
+
+    @property
+    def invite_token(self):
+        return self.company.invite_token
+
+    def get_external_link(self):
+        if self.invite_token == 'kokoc2020' and self.external_id:
+            return f'https://my.kokocgroup.ru/company/personal/user/{self.external_id}/'
+        else:
+            return ''
+
+    def get_full_name(self):
+        return ((self.external_first_name or self.user.first_name) + ' ' + (self.external_last_name or self.user.last_name)).strip()
 
     __repr__ = sane_repr('user', 'state')
 
