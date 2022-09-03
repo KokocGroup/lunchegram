@@ -19,7 +19,7 @@ class Command(BaseCommand):
         # user = User.objects.get(pk=user_to_id)
         partner_user = User.objects.get(pk=test_user_id)
         employee = Employee.objects.get(user=test_user_id)
-        message = __('Hello! Your next random lunch partner is here: [{}](tg://user?id={})\(@{}\) [открыть на портале]({})').format(
+        message = __('Hello! Your next random lunch partner is here: [{}](tg://user?id={})(@{} [открыть на портале]({}))').format(
             employee.get_full_name(), partner_user.telegram_account.uid, partner_user.username, employee.get_external_link())
-
+        print(message)
         bot.send_message(479007211, message, parse_mode='Markdown')
