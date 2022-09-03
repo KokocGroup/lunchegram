@@ -23,7 +23,7 @@ class Command(BaseCommand):
             employee.get_full_name(), partner_user.telegram_account.uid, partner_user.username, employee.get_external_link())
 
         html_message = __(
-            'Hello! Your next random lunch partner is here: <a href="tg://user?id={}">{}</a> (@{} <a href="{}">открыть на портале</a>)').format(
+            'Hello! Your next random lunch partner is here: <a href="tg://user?id={}">{}</a> (@{} - <a href="{}">открыть на портале</a>)').format(
             partner_user.telegram_account.uid, employee.get_full_name(), partner_user.username,
             employee.get_external_link())
 
