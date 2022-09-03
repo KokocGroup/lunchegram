@@ -82,15 +82,23 @@ def notify_lunch_group_member(pk):
         lunch_group = member.lunch_group
         partners = list(LunchGroupMember.objects.filter(lunch_group=lunch_group).exclude(pk=pk))
         if len(partners) == 1:
-            partner_user = partners[0].employee.user
-            message = __('Hello! Your next random lunch partner is here: [{}](tg://user?id={})').format(
-                partner_user.get_full_name(), partner_user.telegram_account.uid)
+            partner_employee = partners[0].employee
+            # partner_user = partners[0].employee.user
+            # message = __('Hello! Your next random lunch partner is here: [{}](tg://user?id={})').format(
+            #     partner_user.get_full_name(), partner_user.telegram_account.uid)
+            message_html = __('Hello! Your next random lunch partner is here: <a href="tg://user?id={}">{}</a> (@{} - <a href="{}">открыть на портале</a>)').format(
+                partner_employee.user.telegram_account.uid, partner_employee.get_full_name(), partner_employee.user.username, partner_employee.get_external_link())
         else:
-            partner_users = (p.employee.user for p in partners)
-            partner_links = (f'[{u.get_full_name() or u.telegram_account.uid}](tg://user?id={u.telegram_account.uid})' for u in partner_users)
-            message = __('Hello! Your next random lunch partners are here: {}').format(', '.join(partner_links))
+            partner_employees = (p.employee for p in partners)
+            # partner_users = (p.employee.user for p in partners)
+            # partner_links = (f'[{u.get_full_name() or u.telegram_account.uid}](tg://user?id={u.telegram_account.uid})' for u in partner_users)
+            # message = __('Hello! Your next random lunch partners are here: {}').format(', '.join(partner_links))
+            partner_links_html = (
+            f'<a href="tg://user?id={e.user.telegram_account.uid}">{e.get_full_name()}</a> (@{e.user.username} - <a href="{e.get_external_link()}">открыть на портале</a>)'
+            for e in partner_employees)
+            message_html = __('Hello! Your next random lunch partners are here: {}').format(', '.join(partner_links_html))
         (
-            send_telegram_message.s(user.pk, message, parse_mode='Markdown') |
+            send_telegram_message.s(user.pk, message_html, parse_mode='HTML') |
             mark_lunch_group_member_as_notified.s(pk)
         ).apply_async()
 

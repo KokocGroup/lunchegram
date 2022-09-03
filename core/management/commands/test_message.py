@@ -16,16 +16,16 @@ class Command(BaseCommand):
     def test_message():
         test_user_id = 7
         user_to_id = 95
-        # user = User.objects.get(pk=user_to_id)
+        user = User.objects.get(pk=user_to_id)
         partner_user = User.objects.get(pk=test_user_id)
         employee = Employee.objects.get(user=test_user_id)
         message = __('Hello! Your next random lunch partner is here: [{}](tg://user?id={})\\(@{} [открыть на портале]({})\\)').format(
             employee.get_full_name(), partner_user.telegram_account.uid, partner_user.username, employee.get_external_link())
 
         html_message = __(
-            'Hello! Your next random lunch partner is here: <a href="tg://user?id={}">{}</a>(@{} <a href="{}">открыть на портале</a>)').format(
+            'Hello! Your next random lunch partner is here: <a href="tg://user?id={}">{}</a> (@{} <a href="{}">открыть на портале</a>)').format(
             partner_user.telegram_account.uid, employee.get_full_name(), partner_user.username,
             employee.get_external_link())
 
         print(html_message)
-        bot.send_message(479007211, html_message, parse_mode='HTML')
+        bot.send_message(user.telegram_account.uid, html_message, parse_mode='HTML')
